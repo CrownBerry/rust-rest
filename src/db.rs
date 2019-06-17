@@ -12,8 +12,8 @@ pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 pub fn connect() -> Pool {
     dotenv::dotenv().ok();
-    let database_url = env::var("database_url")
-        .expect("database_url");
+    let database_url = env::var("DATABASE_URL")
+        .expect("DATABASE_URL variable needed");
 
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
     r2d2::Pool::builder().build(manager)
