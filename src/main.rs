@@ -13,7 +13,7 @@ use routes::*;
 fn main() {
     rocket::ignite()
         .manage(db::connect())
-        .mount("/hero", routes![create, update, delete])
-        .mount("/heroes", routes![read])
+        .mount("/person", routes![create, update, delete])
+        .mount("/persones", routes![read])
         .launch();
 }

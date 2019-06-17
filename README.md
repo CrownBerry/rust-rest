@@ -2,18 +2,26 @@
 
 ## Install
 
-`git clone git@github.com:CrownBerry/rust-rest.git`
+Clone this repo:
 
-`cd rust-rest && rustup override set nightly`
+```git clone git@github.com:CrownBerry/rust-rest.git```
 
-`cargo update && cargo build`
+Set `nightly` build default for this project:
 
-`cargo run`
+```cd rust-rest && rustup override set nightly```
+
+Update crates:
+
+```cargo update && cargo build```
+
+Run app:
+
+```cargo run```
 
 ## Routes
 ### Person JSON object
 Schema:
-```
+```json
 {
     "id": Option<int>,
     "name": String,
@@ -21,7 +29,7 @@ Schema:
 }
 ```
 Example:
-```
+```json
 {
     "name": "John Wick",
     "age": 47
