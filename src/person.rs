@@ -2,6 +2,7 @@ use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 
+use serde_derive::{Serialize, Deserialize};
 use crate::schema::persons;
 
 #[table_name = "persons"]
