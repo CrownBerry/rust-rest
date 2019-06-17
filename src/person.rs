@@ -1,16 +1,15 @@
 use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
+use serde_derive::{Deserialize, Serialize};
 
-use serde_derive::{Serialize, Deserialize};
-use crate::schema::persons;
+use super::schema::persons;
 
-#[table_name = "persons"]
 #[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 pub struct Person {
     pub id: Option<i32>,
     pub name: String,
-    pub age: i32
+    pub age: i32,
 }
 
 impl Person {
@@ -21,14 +20,14 @@ impl Person {
             .expect("Error creating new person");
 
         persons::table
-            .order(persons::id)
+            .order(persons::id.desc())
             .first(connection)
             .unwrap()
     }
 
     pub fn read(connection: &SqliteConnection) -> Vec<Person> {
         persons::table
-            .order(persons::id)
+            .order(persons::id.asc())
             .load::<Person>(connection)
             .unwrap()
     }
