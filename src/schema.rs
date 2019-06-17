@@ -1,7 +1,7 @@
 table! {
-    person (id) {
+    persons (id) {
         id -> Nullable<Integer>,
-        name -> Nullable<Text>,
-        age -> Nullable<Integer>,
+        name -> Text,
+        age -> Integer,
     }
 }
