@@ -3,20 +3,44 @@
 ## Install
 
 Clone this repo:
-
-```git clone git@github.com:CrownBerry/rust-rest.git```
-
+```bash
+git clone git@github.com:CrownBerry/rust-rest.git
+```
 Set `nightly` build default for this project:
-
-```cd rust-rest && rustup override set nightly```
-
+```bash
+cd rust-rest && rustup override set nightly
+```
 Update crates:
-
-```cargo update && cargo build```
-
+```bash
+cargo update && cargo build
+```
+Copy `.env` file
+```bash
+cp .env.example .env
+```
+Fill it with your `DATABASE_URL` and run migrations:
+```bash
+diesel migration run
+```
 Run app:
+```bash
+cargo run
+```
+## Authentication
 
-```cargo run```
+Use table `users` for storing users. Column `password_hash` store hashed password. 
+Hash function is `bcrypt` with 12 round of hashing.
+
+For authenticate on `person` updating request, use header `Authenticate` with JWT-token.
+For acquiring token, proceed on route `/login` with JSON-body `UserRequest`
+
+Example:
+```json
+{
+  "username": "test_user",
+  "password": "12345"
+}
+```
 
 ## Routes
 ### Person JSON object
@@ -35,22 +59,22 @@ Example:
     "age": 47
 }
 ```
-### Persones
-#### Get
+#### Persones
+##### Get
 Route: `<base_url>/persons`
 
 Request:
 
 Response: Array of Person JSON objects
 
-### Person
-#### Post
+#### Person
+##### Post
 Route: `<base_url>/person`
 
 Request: JSON body -> Person JSON object
 
 Response: Person JSON object
-#### Put
+##### Put
 Route: `<base_url>/person/<id>`
 
 Request: `id` parameter, JSON body -> Person JSON object
@@ -61,7 +85,7 @@ Response:
     "success": bool
 }
 ```
-#### Delete
+##### Delete
 Route: `<base_url>/person/<id>`
 
 Request: `id` parameter
