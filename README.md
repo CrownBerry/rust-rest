@@ -31,7 +31,7 @@ cargo run
 Use table `users` for storing users. Column `password_hash` store hashed password. 
 Hash function is `bcrypt` with 12 round of hashing.
 
-For authenticate on `person` updating request, use header `Authenticate` with JWT-token.
+For authenticate on `person` updating request, use header `Authentication` with JWT-token.
 For acquiring token, proceed on route `/login` with JSON-body `UserRequest`
 
 Example:
