@@ -21,7 +21,7 @@ Run app:
 ## Routes
 ### Person JSON object
 Schema:
-```json
+```
 {
     "id": Option<int>,
     "name": String,
@@ -37,20 +37,38 @@ Example:
 ```
 ### Persones
 #### Get
-Route:
+Route: `<base_url>/persones`
+
 Request:
-Response:
+
+Response: Array of Person JSON objects
 
 ### Person
 #### Post
-Route:
-Request:
-Response:
+Route: `<base_url>/person`
+
+Request: JSON body -> Person JSON object
+
+Response: Person JSON object
 #### Put
-Route:
-Request:
+Route: `<base_url>/person/<id>`
+
+Request: `id` parameter, JSON body -> Person JSON object
+
 Response:
+```
+{
+    "success": bool
+}
+```
 #### Delete
-Route:
-Request:
+Route: `<base_url>/person/<id>`
+
+Request: `id` parameter
+
 Response:
+```
+{
+    "success": bool
+}
+```
