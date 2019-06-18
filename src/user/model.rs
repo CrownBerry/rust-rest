@@ -2,7 +2,7 @@ use diesel;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use serde_derive::{Deserialize, Serialize};
-use bcrypt::{hash, DEFAULT_COST};
+use bcrypt::{hash, verify, DEFAULT_COST};
 
 use super::schema::users;
 
@@ -13,7 +13,7 @@ pub struct User {
     pub password_hash: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UserRequest {
     pub username: String,
     pub password: String,
@@ -28,9 +28,7 @@ impl User {
     }
 
     pub fn create(user: User, connection: &SqliteConnection) -> QueryResult<User> {
-        let pwhash = hash(user.password_hash, DEFAULT_COST)
-            .expect("Failed to hash password");
-
+        let pwhash = hash_password(user.password_hash);
         let user = User { id: None, username: user.username, password_hash: pwhash };
 
         diesel::insert_into(users::table)
@@ -40,4 +38,25 @@ impl User {
 
         users::table.order(users::id.desc()).first(connection)
     }
+
+    pub fn by_username_and_password(user_request: UserRequest, connection: &SqliteConnection) -> Option<User> {
+        let res = users::table
+            .filter(users::username.eq(user_request.username))
+            .order(users::id)
+            .first::<User>(connection);
+        match res {
+            Ok(user) => {
+                match verify(user_request.password.to_string(), &user.password_hash.to_string()) {
+                    Ok(_) => Some(user),
+                    Err(_) => None
+                }
+            },
+            Err(_) => None
+        }
+    }
+}
+
+fn hash_password(password: String) -> String {
+    hash(password, DEFAULT_COST)
+        .expect("Failed to hash password")
 }
