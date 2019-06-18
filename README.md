@@ -45,7 +45,7 @@ Example:
 ## Routes
 ### Person JSON object
 Schema:
-```
+```metadata json
 {
     "id": Option<int>,
     "name": String,
@@ -80,7 +80,7 @@ Route: `<base_url>/person/<id>`
 Request: `id` parameter, JSON body -> Person JSON object
 
 Response:
-```
+```metadata json
 {
     "success": bool
 }
@@ -91,7 +91,7 @@ Route: `<base_url>/person/<id>`
 Request: `id` parameter
 
 Response:
-```
+```metadata json
 {
     "success": bool
 }
