@@ -52,6 +52,10 @@ struct Person{
     age: i32
 }
 ```
+> NOTE:
+> Field `id` is optional. When you create a new Person, skip this field. 
+> It will be assign automatically, based on database configuration 
+
 Example:
 ```json
 {
