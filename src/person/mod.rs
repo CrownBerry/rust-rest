@@ -1,10 +1,14 @@
 use rocket::{delete, get, post, put};
+use rocket::routes;
 use rocket_contrib::json::{Json, JsonValue};
 use rocket_contrib::json;
 
 use crate::db;
 
-use super::person::Person;
+use self::model::Person;
+
+pub mod model;
+pub mod schema;
 
 #[post("/", data = "<person>")]
 pub fn create(person: Json<Person>, connection: db::Connection) -> Json<Person> {
@@ -30,4 +34,10 @@ pub fn delete(id: i32, connection: db::Connection) -> Json<JsonValue> {
     Json(json!({
         "success": Person::delete(id, &connection)
     }))
+}
+
+pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
+    rocket
+        .mount("/person", routes![create, update, delete])
+        .mount("/persons", routes![read])
 }
