@@ -14,6 +14,6 @@ fn main() {
     rocket::ignite()
         .manage(db::connect())
         .mount("/person", routes![create, update, delete])
-        .mount("/persones", routes![read])
+        .mount("/persons", routes![read])
         .launch();
 }

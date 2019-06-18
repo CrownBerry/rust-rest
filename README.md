@@ -37,7 +37,7 @@ Example:
 ```
 ### Persones
 #### Get
-Route: `<base_url>/persones`
+Route: `<base_url>/persons`
 
 Request:
 
