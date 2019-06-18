@@ -26,27 +26,27 @@ fn login(credentials: Json<UserRequest>, connection: db::Connection) -> Result<J
 }
 
 #[get("/users?<id>")]
-fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> Result<Json<JsonValue>, Status> {
+fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> Result<Json<Vec<User>>, Status> {
     match User::read(id, &connection) {
-        Ok(res) => Ok(Json(json!(res))),
+        Ok(res) => Ok(Json(res)),
         Err(_) => Err(Status::NotFound)
     }
 }
 #[get("/users?<id>", rank = 2)]
-fn read_error(id: Option<i32>) -> Result<Json<JsonValue>, Status> {
+fn read_error(id: Option<i32>) -> Result<(), Status> {
     Err(Status::Unauthorized)
 }
 
 #[post("/", data = "<user>")]
-fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> Result<Json<JsonValue>, Status> {
+fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> Result<Json<User>, Status> {
     let insert = User { id: None, username: user.username.to_string(), password_hash: user.password.to_string() };
     match User::create(insert, &connection) {
-        Ok(res) => Ok(Json(json!(res))),
+        Ok(res) => Ok(Json(res)),
         Err(_) => Err(Status::BadRequest)
     }
 }
 #[post("/", rank = 2)]
-fn create_error() -> Result<Json<JsonValue>, Status> {
+fn create_error() -> Result<(), Status> {
     Err(Status::Unauthorized)
 }
 

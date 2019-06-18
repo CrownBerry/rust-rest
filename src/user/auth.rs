@@ -8,7 +8,7 @@ use super::model::User;
 pub struct ApiKey(pub String);
 static SECRET_KEY: &[u8] = b"secret key";
 
-pub fn read_token(key: &str) -> Result<String, String> {
+fn read_token(key: &str) -> Result<String, String> {
     let token = Token::<Header, Registered>::parse(key)
         .map_err(|_| "Unable to parse key to string")?;
 
