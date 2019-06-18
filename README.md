@@ -45,11 +45,11 @@ Example:
 ## Routes
 ### Person JSON object
 Schema:
-```metadata json
-{
-    "id": Option<int>,
-    "name": String,
-    "age": i32
+```rust
+struct Person{
+    id: Option<i32>,
+    name: String,
+    age: i32
 }
 ```
 Example:
@@ -79,10 +79,10 @@ Route: `<base_url>/person/<id>`
 
 Request: `id` parameter, JSON body -> Person JSON object
 
-Response:
-```metadata json
+Response example:
+```json
 {
-    "success": bool
+    "success": true
 }
 ```
 ##### Delete
@@ -91,8 +91,8 @@ Route: `<base_url>/person/<id>`
 Request: `id` parameter
 
 Response:
-```metadata json
+```json
 {
-    "success": bool
+    "success": true
 }
 ```
