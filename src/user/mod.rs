@@ -3,14 +3,14 @@ use rocket::routes;
 use rocket_contrib::json::{Json, JsonValue};
 use rocket_contrib::json;
 
+use crate::api::auth;
+use crate::api::auth::ApiKey;
 use crate::db;
 
-use self::auth::ApiKey;
 use self::model::{User, UserRequest};
 
 pub mod model;
 pub mod schema;
-pub mod auth;
 
 #[post("/", data = "<credentials>")]
 fn login(credentials: Json<UserRequest>, connection: db::Connection) -> Result<Json<JsonValue>, Status> {

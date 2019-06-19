@@ -1,9 +1,23 @@
-use diesel::result::Error as DieselError;
-use rocket::{Request, http::Status};
-use rocket::response::{Response, Responder};
 use std::error::Error;
-use serde_derive::Serialize;
+
+use diesel::result::Error as DieselError;
+use rocket::{http::Status, Request};
+use rocket::response::{Responder, Response};
 use rocket_contrib::json::Json;
+use serde_derive::{Deserialize, Serialize};
+
+pub mod auth;
+
+#[derive(Serialize, Deserialize)]
+pub struct SuccessResponse {
+    success: bool
+}
+
+impl SuccessResponse {
+    pub fn new(is: bool) -> SuccessResponse {
+        SuccessResponse { success: is }
+    }
+}
 
 #[derive(Debug)]
 pub enum ApiError {
@@ -29,7 +43,7 @@ impl<'r> Responder<'r> for ApiError {
             }
         };
 
-        Json(ErrorResponse {status: "error", message }).respond_to(request)
+        Json(ErrorResponse { status: "error", message }).respond_to(request)
     }
 }
 

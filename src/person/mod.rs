@@ -1,26 +1,15 @@
 use rocket::{delete, get, post, put};
 use rocket::routes;
 use rocket_contrib::json::Json;
-use serde_derive::{Deserialize, Serialize};
 
+use crate::api::{ApiResult, SuccessResponse};
+use crate::api::auth::ApiKey;
 use crate::db;
-use crate::user::auth::ApiKey;
 
 use self::model::Person;
-use crate::api::ApiResult;
 
 pub mod model;
 pub mod schema;
-
-#[derive(Serialize, Deserialize)]
-struct SuccessResponse {
-    success: bool
-}
-impl SuccessResponse {
-    pub fn new(is: bool) -> SuccessResponse {
-        SuccessResponse { success: is }
-    }
-}
 
 #[post("/", data = "<person>")]
 fn create(_key: ApiKey, person: Json<Person>, connection: db::Connection) -> ApiResult<Person> {

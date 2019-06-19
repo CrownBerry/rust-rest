@@ -1,11 +1,12 @@
 use crypto::sha2::Sha256;
 use jwt::{Header, Registered, Token};
-use rocket::request::{self, Request, FromRequest};
-use rocket::{Outcome, http::Status};
+use rocket::{http::Status, Outcome};
+use rocket::request::{self, FromRequest, Request};
 
-use super::model::User;
+use crate::user::model::User;
 
 pub struct ApiKey(pub String);
+
 static SECRET_KEY: &[u8] = b"secret key";
 
 fn read_token(key: &str) -> Result<String, String> {
