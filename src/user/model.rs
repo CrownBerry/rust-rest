@@ -29,8 +29,11 @@ impl User {
     }
 
     pub fn create(user: User, connection: &SqliteConnection) -> Result<User, Error> {
-        let pwhash = hash_password(user.password_hash);
-        let user = User { id: None, username: user.username, password_hash: pwhash };
+        let user = User {
+            id: None,
+            username: user.username,
+            password_hash: hash_password(user.password_hash)
+        };
 
         diesel::insert_into(users::table)
             .values(&user)
