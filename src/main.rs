@@ -4,6 +4,7 @@
 mod db;
 mod person;
 mod user;
+mod api;
 
 fn main() {
     let mut rocket = rocket::ignite()
