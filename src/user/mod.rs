@@ -32,10 +32,6 @@ fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> Result<Jso
         Err(_) => Err(Status::NotFound)
     }
 }
-#[get("/users?<id>", rank = 2)]
-fn read_error(id: Option<i32>) -> Result<(), Status> {
-    Err(Status::Unauthorized)
-}
 
 #[post("/", data = "<user>")]
 fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> Result<Json<User>, Status> {
@@ -45,14 +41,10 @@ fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> 
         Err(_) => Err(Status::BadRequest)
     }
 }
-#[post("/", rank = 2)]
-fn create_error() -> Result<(), Status> {
-    Err(Status::Unauthorized)
-}
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
     rocket
-        .mount("/", routes![read, read_error])
-        .mount("/user", routes![create, create_error])
+        .mount("/", routes![read])
+        .mount("/user", routes![create])
         .mount("/login", routes![login])
 }

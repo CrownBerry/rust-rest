@@ -37,12 +37,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for ApiKey {
     fn from_request(request: &'a Request<'r>) -> request::Outcome<ApiKey, ()> {
         let keys: Vec<_> = request.headers().get("Authentication").collect();
         if keys.len() != 1 {
-            return Outcome::Forward(());
+            return Outcome::Failure((Status::Unauthorized, ()));
         }
 
         match read_token(keys[0]) {
             Ok(claim) => Outcome::Success(ApiKey(claim)),
-            Err(_) => Outcome::Forward(())
+            Err(_) => Outcome::Failure((Status::Unauthorized, ()))
         }
     }
 }
