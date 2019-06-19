@@ -14,6 +14,7 @@ pub mod schema;
 #[post("/", data = "<person>")]
 fn create(_key: ApiKey, person: Json<Person>, connection: db::Connection) -> ApiResult<Person> {
     let insert = Person { id: None, ..person.into_inner() };
+
     let person = Person::create(insert, &connection)?;
     Ok(Json(person))
 }
@@ -27,6 +28,7 @@ fn read(connection: db::Connection) -> ApiResult<Vec<Person>> {
 #[put("/<id>", data = "<person>")]
 fn update(_key: ApiKey, id: i32, person: Json<Person>, connection: db::Connection) -> ApiResult<SuccessResponse> {
     let update = Person { id: Some(id), ..person.into_inner() };
+
     Person::update(id, update, &connection)?;
     Ok(Json(SuccessResponse::new(true)))
 }

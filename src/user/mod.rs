@@ -26,7 +26,12 @@ fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> ApiResult<
 
 #[post("/", data = "<user>")]
 fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> ApiResult<User> {
-    let insert = User { id: None, username: user.username.to_string(), password_hash: user.password.to_string() };
+    let insert = User {
+        id: None,
+        username: user.username.to_string(),
+        password_hash: user.password.to_string()
+    };
+
     let user = User::create(insert, &connection)?;
     Ok(Json(user))
 }
