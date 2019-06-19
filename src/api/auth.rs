@@ -2,10 +2,26 @@ use crypto::sha2::Sha256;
 use jwt::{Header, Registered, Token};
 use rocket::{http::Status, Outcome};
 use rocket::request::{self, FromRequest, Request};
+use serde_derive::{Deserialize, Serialize};
 
 use crate::user::model::User;
 
 pub struct ApiKey(pub String);
+
+#[derive(Serialize, Deserialize)]
+pub struct TokenResponse {
+    success: bool,
+    token: String
+}
+
+impl TokenResponse {
+    pub fn from(token: String) -> TokenResponse {
+        TokenResponse {
+            success: true,
+            token
+        }
+    }
+}
 
 static SECRET_KEY: &[u8] = b"secret key";
 

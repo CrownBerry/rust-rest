@@ -5,6 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use bcrypt::{hash, verify, DEFAULT_COST};
 
 use super::schema::users;
+use diesel::result::Error;
 
 #[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 pub struct User {
@@ -20,38 +21,35 @@ pub struct UserRequest {
 }
 
 impl User {
-    pub fn read(id: Option<i32>, connection: &SqliteConnection) -> QueryResult<Vec<User>> {
+    pub fn read(id: Option<i32>, connection: &SqliteConnection) -> Result<Vec<User>, Error> {
         match id {
             Some(id) => users::table.find(id).load::<User>(connection),
             None => users::table.order(users::id.asc()).load::<User>(connection)
         }
     }
 
-    pub fn create(user: User, connection: &SqliteConnection) -> QueryResult<User> {
+    pub fn create(user: User, connection: &SqliteConnection) -> Result<User, Error> {
         let pwhash = hash_password(user.password_hash);
         let user = User { id: None, username: user.username, password_hash: pwhash };
 
         diesel::insert_into(users::table)
             .values(&user)
-            .execute(connection)
-            .expect("Failed to create new user");
+            .execute(connection)?;
 
-        users::table.order(users::id.desc()).first(connection)
+        users::table
+            .order(users::id.desc())
+            .first::<User>(connection)
     }
 
-    pub fn by_username_and_password(user_request: UserRequest, connection: &SqliteConnection) -> Option<User> {
-        let res = users::table
+    pub fn find(user_request: UserRequest, connection: &SqliteConnection) -> Result<User, Error> {
+        let user = users::table
             .filter(users::username.eq(user_request.username))
             .order(users::id)
-            .first::<User>(connection);
-        match res {
-            Ok(user) => {
-                match verify(user_request.password.to_string(), &user.password_hash.to_string()) {
-                    Ok(_) => Some(user),
-                    Err(_) => None
-                }
-            },
-            Err(_) => None
+            .first::<User>(connection)?;
+
+        match verify(user_request.password.to_string(), &user.password_hash.to_string()) {
+            Err(_) => Err(Error::NotFound),
+            Ok(_) => Ok(user)
         }
     }
 }

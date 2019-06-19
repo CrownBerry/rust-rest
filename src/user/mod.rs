@@ -1,10 +1,9 @@
-use rocket::{get, http::Status, post};
+use rocket::{get, post};
 use rocket::routes;
-use rocket_contrib::json::{Json, JsonValue};
-use rocket_contrib::json;
+use rocket_contrib::json::Json;
 
-use crate::api::auth;
-use crate::api::auth::ApiKey;
+use crate::api::{auth, ApiResult};
+use crate::api::auth::{ApiKey, TokenResponse};
 use crate::db;
 
 use self::model::{User, UserRequest};
@@ -13,33 +12,23 @@ pub mod model;
 pub mod schema;
 
 #[post("/", data = "<credentials>")]
-fn login(credentials: Json<UserRequest>, connection: db::Connection) -> Result<Json<JsonValue>, Status> {
-    match User::by_username_and_password(credentials.into_inner(), &connection) {
-        None => {
-            Err(Status::BadRequest)
-        }
-        Some(user) => {
-            let token = auth::generate_token(user).unwrap();
-            Ok(Json(json!({"success": true, "token": token})))
-        }
-    }
+fn login(credentials: Json<UserRequest>, connection: db::Connection) -> ApiResult<TokenResponse> {
+    let user = User::find(credentials.into_inner(), &connection)?;
+    let token = auth::generate_token(user).unwrap();
+    Ok(Json(TokenResponse::from(token)))
 }
 
 #[get("/users?<id>")]
-fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> Result<Json<Vec<User>>, Status> {
-    match User::read(id, &connection) {
-        Ok(res) => Ok(Json(res)),
-        Err(_) => Err(Status::NotFound)
-    }
+fn read(_key: ApiKey, id: Option<i32>, connection: db::Connection) -> ApiResult<Vec<User>> {
+    let users = User::read(id, &connection)?;
+    Ok(Json(users))
 }
 
 #[post("/", data = "<user>")]
-fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> Result<Json<User>, Status> {
+fn create(_key: ApiKey, user: Json<UserRequest>, connection: db::Connection) -> ApiResult<User> {
     let insert = User { id: None, username: user.username.to_string(), password_hash: user.password.to_string() };
-    match User::create(insert, &connection) {
-        Ok(res) => Ok(Json(res)),
-        Err(_) => Err(Status::BadRequest)
-    }
+    let user = User::create(insert, &connection)?;
+    Ok(Json(user))
 }
 
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
