@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "rra.fullname" . }}
+  labels:
+    app: {{ template "rra.fullname" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: rra
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.rra.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rra.fullname" . }}
+        release: "{{ .Release.Name }}"
+        component: rra
+      spec:
+        serviceAccountName: {{ template "rra.serviceAccountName" . }}
+{{- if .Values.rra.affinity }}
+      affinity:
+{{ toYaml .Values.rra.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.rra.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.rra.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.rra.tolerations }}
+      tolerations:
+{{ toYaml .Values.rra.tolerations | indent 8 }}
+{{- end }}
+      containers:
+      - name: {{ template "rra.fullname" . }}
+        image: "{{ .Values.image.repo }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        command: ["/app/rra", "serve"]
+        env:
+          - name: DATABASE_URL
+            value: {{ .Values.rra.db.host | quote }}
+          - name: ROCKET_PORT
+            value: {{ .Values.rra.port | quote }}
+        resources:
+{{ toYaml .Values.rra.resources | indent 10 }}

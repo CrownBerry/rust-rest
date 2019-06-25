@@ -1,0 +1,20 @@
+image:
+  repo: "eu.gcr.io/rust-rest-api/rra"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  name: rra
+
+rra:
+  replicas: 1
+  port: 8080
+  servicePort: 8080
+  resources:
+    requests:
+      memory: 50Mi
+  affinity:
+  nodeSelector:
+  tolerations:
+
+  db:
+    host: test.sqlite3
