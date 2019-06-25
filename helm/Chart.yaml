@@ -1,0 +1,10 @@
+name: rust-rest
+home: https://github.com/CrownBerry/rust-rest
+version: 0.1.0
+appVersion: 0.1.0
+description: Rust REST API service Helm chart
+sources:
+  - https://github.com/CrownBerry/rust-rest
+maintainers:
+  - name: Alexandr Koeln
+    email: koelnfrei@gmail.com

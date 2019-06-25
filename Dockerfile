@@ -9,4 +9,4 @@ RUN apk --no-cache add ca-certificates
 COPY --from=builder \
     /home/rust/src/target/x86_64-unknown-linux-musl/release/rust-rest \
     /usr/local/bin/
-CMD /usr/local/bin/using-diesel
+CMD /usr/local/bin/rust-rest
