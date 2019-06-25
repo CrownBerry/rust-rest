@@ -5,6 +5,9 @@ image:
 serviceAccount:
   name: rra
 
+ingress:
+  enabled: false
+
 rra:
   replicas: 1
   port: 8080
