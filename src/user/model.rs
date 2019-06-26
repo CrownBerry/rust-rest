@@ -1,6 +1,6 @@
 use diesel;
 use diesel::prelude::*;
-use diesel::sqlite::SqliteConnection;
+use diesel::pg::PgConnection;
 use serde_derive::{Deserialize, Serialize};
 use bcrypt::{hash, verify, DEFAULT_COST};
 
@@ -21,14 +21,14 @@ pub struct UserRequest {
 }
 
 impl User {
-    pub fn read(id: Option<i32>, connection: &SqliteConnection) -> Result<Vec<User>, Error> {
+    pub fn read(id: Option<i32>, connection: &PgConnection) -> Result<Vec<User>, Error> {
         match id {
             Some(id) => users::table.find(id).load::<User>(connection),
             None => users::table.order(users::id.asc()).load::<User>(connection)
         }
     }
 
-    pub fn create(user: User, connection: &SqliteConnection) -> Result<User, Error> {
+    pub fn create(user: User, connection: &PgConnection) -> Result<User, Error> {
         let user = User {
             id: None,
             username: user.username,
@@ -44,7 +44,7 @@ impl User {
             .first::<User>(connection)
     }
 
-    pub fn find(user_request: UserRequest, connection: &SqliteConnection) -> Result<User, Error> {
+    pub fn find(user_request: UserRequest, connection: &PgConnection) -> Result<User, Error> {
         let user = users::table
             .filter(users::username.eq(user_request.username))
             .order(users::id)

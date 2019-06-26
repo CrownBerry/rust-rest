@@ -15,10 +15,7 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          serviceName: {{ template "rra.fullname" $ }}
-          servicePort: 80
+  backend:
+    serviceName: {{ template "rra.fullname" $ }}
+    servicePort: 8080
 {{ end }}

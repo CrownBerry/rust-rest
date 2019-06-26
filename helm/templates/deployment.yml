@@ -17,8 +17,8 @@ spec:
         app: {{ template "rra.fullname" . }}
         release: "{{ .Release.Name }}"
         component: rra
-      spec:
-        serviceAccountName: {{ template "rra.serviceAccountName" . }}
+    spec:
+      serviceAccountName: {{ template "rra.serviceAccountName" . }}
 {{- if .Values.rra.affinity }}
       affinity:
 {{ toYaml .Values.rra.affinity | indent 8 }}
@@ -35,11 +35,14 @@ spec:
       - name: {{ template "rra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        command: ["/app/rra", "serve"]
         env:
           - name: DATABASE_URL
             value: {{ .Values.rra.db.host | quote }}
           - name: ROCKET_PORT
             value: {{ .Values.rra.port | quote }}
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /
         resources:
 {{ toYaml .Values.rra.resources | indent 10 }}

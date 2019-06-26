@@ -1,6 +1,6 @@
 use diesel;
 use diesel::prelude::*;
-use diesel::sqlite::SqliteConnection;
+use diesel::pg::PgConnection;
 use serde_derive::{Deserialize, Serialize};
 
 use super::schema::persons;
@@ -14,7 +14,7 @@ pub struct Person {
 }
 
 impl Person {
-    pub fn create(person: Person, connection: &SqliteConnection) -> Result<Person, Error> {
+    pub fn create(person: Person, connection: &PgConnection) -> Result<Person, Error> {
         diesel::insert_into(persons::table)
             .values(&person)
             .execute(connection)?;
@@ -24,19 +24,19 @@ impl Person {
             .first::<Person>(connection)
     }
 
-    pub fn read(connection: &SqliteConnection) -> Result<Vec<Person>, Error> {
+    pub fn read(connection: &PgConnection) -> Result<Vec<Person>, Error> {
         persons::table
             .order(persons::id.asc())
             .load::<Person>(connection)
     }
 
-    pub fn update(id: i32, person: Person, connection: &SqliteConnection) -> Result<usize, Error> {
+    pub fn update(id: i32, person: Person, connection: &PgConnection) -> Result<usize, Error> {
         diesel::update(persons::table.find(id))
             .set(&person)
             .execute(connection)
     }
 
-    pub fn delete(id: i32, connection: &SqliteConnection) -> Result<usize, Error>  {
+    pub fn delete(id: i32, connection: &PgConnection) -> Result<usize, Error>  {
         diesel::delete(persons::table.find(id))
             .execute(connection)
     }

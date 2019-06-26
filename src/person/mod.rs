@@ -42,5 +42,5 @@ fn delete(_key: ApiKey, id: i32, connection: db::Connection) -> ApiResult<Succes
 pub fn mount(rocket: rocket::Rocket) -> rocket::Rocket {
     rocket
         .mount("/person", routes![create, update, delete])
-        .mount("/persons", routes![read])
+        .mount("/", routes![read])
 }

@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "rra.fullname" . }}-migrate-database
+  labels:
+    app: {{ template "rra.fullname" . }}
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: rra
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  template:
+    spec:
+      containers:
+      - name: {{ template "rra.fullname" . }}-migrate-database
+        image: "{{ .Values.image.repo }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - |
+          /usr/local/bin/diesel migration run
+        env:
+          - name: DATABASE_URL
+            value: {{ .Values.rra.db.host | quote }}
+      restartPolicy: Never
+  backoffLimit: 4

@@ -1,7 +1,7 @@
-name: rust-rest
+name: rra
 home: https://github.com/CrownBerry/rust-rest
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.2.2
+appVersion: 0.2.2
 description: Rust REST API service Helm chart
 sources:
   - https://github.com/CrownBerry/rust-rest
